@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Record Audio</h5>
+          <form id="audio-form">
+            {% csrf_token %}
+            <div class="mb-3">
+              <button type="button" class="btn btn-primary" id="record-btn">Record</button>
+              <button type="button" class="btn btn-danger" id="stop-btn" disabled>Stop</button>
+              <button type="submit" class="btn btn-success" id="upload-btn" disabled>Upload</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const recordBtn = document.querySelector('#record-btn');
+  const stopBtn = document.querySelector('#stop-btn');
+  const uploadBtn = document.querySelector('#upload-btn');
+  const audioForm = document.querySelector('#audio-form');
+  const csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+  let mediaRecorder;
+  let chunks = [];
+
+  const startRecording = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = (event) => {
+      chunks.push(event.data);
+    };
+    mediaRecorder.start();
+  };
+
+  const stopRecording = () => {
+    mediaRecorder.stop();
+  };
+
+  const handleDataAvailable = (event) => {
+    chunks.push(event.data);
+  };
+
+  const handleStop = async () => {
+    const blob = new Blob(chunks, { type: 'audio/webm' });
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audio.play();
+    const formData = new FormData();
+    formData.append('csrfmiddlewaretoken', csrfToken);
+    formData.append('audio_file', blob);
+    const response = await fetch('/upload-audio/', {
+      method: 'POST',
+      body: formData,
+    });
+    if (response.ok) {
+      console.log('Audio uploaded successfully');
+    } else {
+      console.error('Error uploading audio');
+    }
+  };
+
+  recordBtn.addEventListener('click', () => {
+    startRecording();
+    recordBtn.disabled = true;
+    stopBtn.disabled = false;
+    uploadBtn.disabled = true;
+  });
+
+  stopBtn.addEventListener('click', () => {
+    stopRecording();
+    recordBtn.disabled = false;
+    stopBtn.disabled = true;
+    uploadBtn.disabled = false;
+  });
+
+  mediaRecorder.addEventListener('dataavailable', handleDataAvailable);
+  mediaRecorder.addEventListener('stop', handleStop);
+</script>
+{% endblock %}
