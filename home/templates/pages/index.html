@@ -1,0 +1,43 @@
+{% extends 'layouts/base-fullscreen.html' %}
+{% load i18n static admin_soft %}
+
+{% block content %}
+
+  {% include 'includes/navigation-fullscreen.html' %}
+
+  <main class="main-content  mt-0">
+    <section>
+      <div class="page-header min-vh-75">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+              <div class="card card-plain mt-8">
+                <div class="card-header pb-0 text-left bg-transparent">
+                  <h3 class="font-weight-bolder text-info text-gradient">
+                    A.I. solutions for companies and individuals
+                  </h3>
+                  
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">
+                        We are scientists and computer programmers deeply inspired by the strides achieved in artificial intelligence in recent times. However, we also feel that those same accomplishments are very often only understood inside small groups of academic researchers and, consequently, fail to manifest outside of research papers. It is our goal to change that.
+    
+                         We came together in our vision of bringing state of the art models closer to a real world realization, so the whole of society can benefit from these unprecedented technological advancements.
+                      </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('{% static 'img/curved-images/curved6.jpg' %}')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {% include 'includes/footer-fullscreen.html' %}
+
+{% endblock content %}
